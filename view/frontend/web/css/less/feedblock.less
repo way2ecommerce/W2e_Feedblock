@@ -1,0 +1,206 @@
+@background-color: #f8f8f8;
+@shadow-color: #dfdfdf;
+@heading-color: #3399cc;
+@heading-text-color: #fff;
+@readmore-background-color: #2d69aa;
+@readmore-text-color: #fff;
+@title-color: #000;
+@buttons-color: #eee;
+@arrow-color: @heading-color;
+
+.w2e.w2e-slider {
+  background-color: @background-color;
+  box-shadow: 0 4px 4px @shadow-color;
+  .section-title {
+    background-color: @heading-color;
+    font-size: 22px;
+    font-weight: 700;
+    padding-left: 12px;
+    border-bottom: 1px solid #fff;
+    padding-top:12px;
+    padding-bottom:12px;
+    color: @heading-text-color;
+  }
+
+  p {
+    margin: 0 0 1.5em;
+  }
+
+  .padding-right {
+    padding-right: 80px !important;
+  }
+
+  .itemslider {
+    margin-bottom: 20px;
+  }
+
+  .owl-carousel{
+    display: none;
+    position: relative;
+    width: 100%;
+    -ms-touch-action: pan-y;
+
+    .owl-wrapper-outer{
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+    }
+
+    .owl-wrapper, .owl-item{
+      -webkit-backface-visibility: hidden;
+      -moz-backface-visibility:    hidden;
+      -ms-backface-visibility:     hidden;
+      -webkit-transform: translate3d(0,0,0);
+      -moz-transform: translate3d(0,0,0);
+      -ms-transform: translate3d(0,0,0);
+    }
+
+    .owl-wrapper{
+      display: none;
+      position: relative;
+      -webkit-transform: translate3d(0px, 0px, 0px);
+    }
+
+    .owl-item{
+      float: left;
+    }
+  }
+
+
+  .item {
+    padding: 20px 12px;
+    display: flow-root;
+    display: flow-root;
+
+    .date-categories {
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+
+    .description {
+      display: flow-root;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    a.a-center {
+      background-color: @readmore-background-color;
+      border-radius: 10px;
+      color: @readmore-text-color;
+      display: inline-block;
+      font-size: 13px !important;
+      font-weight: 600;
+      height: 24px;
+      line-height: 23px;
+      padding: 0 7px;
+    }
+
+    h3 {
+      min-height: 30px;
+    }
+
+    h3 a {
+      color: @title-color;
+      font-size: 20px;
+      font-weight: 700;
+      display: inline;
+    }
+
+    .date-categories {
+      margin-bottom: 15px;
+      display: inline-block;
+
+      line-height: 15px;
+    }
+
+    .date {
+      padding-right: 3px;
+      display: block;
+      background: rgba(0, 0, 0, 0) url(../images/spriteFeedblock.png) no-repeat scroll 0 0;
+      padding-left: 17px;
+    }
+
+    .categories {
+      background: rgba(0, 0, 0, 0) url(../images/spriteFeedblock.png) no-repeat scroll 0 0;
+      padding-left: 17px;
+      background-position-y: -15px;
+    }
+  }
+
+  .clickable {
+    position: absolute;
+    top: -53px;
+    right: 0;
+    width: 88px;
+  }
+
+
+  .owl-controls {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    .owl-buttons {
+      position: absolute;
+      top: 0px;
+      right: 12px;
+
+      div {
+        background-color: @buttons-color;
+        cursor: pointer;
+        display: block;
+        float: left;
+        height: 30px;
+        line-height: 30px;
+        overflow: hidden;
+        text-align: center;
+        text-decoration: none;
+        text-indent:-9999px;
+        position:relative;
+        transition: opacity 300ms ease-in-out 0s, background-color 300ms ease-in-out 0s, background-position 300ms ease-in-out 0s;
+        width: 30px;
+        margin-left:5px;
+      }
+
+      .owl-prev:after {
+        content:" ";
+        position:absolute;
+        top:10px;
+        left: 12px;
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-right: 5px solid @arrow-color;
+      }
+
+      .owl-next:after {
+        content:" ";
+        position:absolute;
+        top:10px;
+        left: 13px;
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 5px solid @arrow-color;
+      }
+    }
+  }
+
+  .news-image-wrapper {
+    display: block;
+    float: left;
+    margin-bottom: 0;
+    margin-right: 20px;
+    max-width: 35%;
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+
+}

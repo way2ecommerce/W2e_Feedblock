@@ -1,0 +1,50 @@
+Action,Acción
+Actions, Acciones
+Add New Feed,Añadir feed
+Are you sure you want to delete the block "${ $.$data.block_title }" with id "${ $.$data.feedblock_id }"?, Seguro que deseas eliminar el bloque "${ $.$data.block_title }" con id "${ $.$data.feedblock_id }"?
+Are you sure you want to delete the selected items?,¿Desea eliminar los elementos seleccionados?
+Are you sure you want to disable the selected items?,¿Desea deshabilitar los elementos seleccionados?
+A total of %1 record(s) have been enabled., Un total de %1 elementos han sido habilitados.
+A total of %1 record(s) have been deleted.,Un total de %1 elementos han sido eliminados.
+A total of %1 record(s) have been disabled., Un total de %1 elementos han sido deshabilitados.
+Attention,Atención
+Back, Atrás
+Block Title,Título del bloque
+Cancel, Cancelar
+Delete,Eliminar
+Delete Feed, Eliminar feed
+Delete items,Eliminar elementos
+Delete "${ $.$data.block_title }", Eliminar "${ $.$data.block_title }"
+Description limit,Límite de descripción
+Disable,Deshabilitar
+Disable items, Deshabilitar elementos
+Disabled,Deshabilitado
+Edit,Editar
+Edit feed,Editar feed
+Enable,Habilitar
+Enabled,Habilitado
+Feed Url,Url del feed
+Feedblock News,Novedades de Feedblock
+General Information, Información General
+ID,ID
+Include Image?,¿Incluir imagen?
+New Feed, Nuevo Feed
+No,No
+Number of items,Número de elementos
+Path,Ruta
+Read more,Leer más
+Reset, Restablecer
+Save and Continue Edit, Guardar y continuar editando
+Save Feed,Guardar feed
+Leave it blank or set 0 to include the entire description,Dejar en blanco o indicar 0 para incluir toda la descripción
+Select,Seleccionar
+Show Categories?,¿Mostrar categorías?
+Something went wrong while saving the feed, Error al guardar el feed
+Show Image?,¿Mostrar imagen?
+Status,Estado
+The feed has been deleted.,El feed ha sido eliminado
+Use Slider?,¿Usar slider?
+We cannot find the feed to delete., No encontramos el feed a eliminar.
+Yes,Sí
+You haven't selected any items!,No ha seleccionando ningún elemento
+You saved this Feed., Feed Guardado.

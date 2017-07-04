@@ -1,0 +1,85 @@
+<?php
+
+
+$block->setFeetId($this->getData('feed_id'));
+
+$item = $block->getFeedData();
+
+$feed = $this->getFeedConfData();
+
+
+?>
+<?php if($item) : ?>
+	<div class="w2e w2e-slider">
+		<h3 class="section-title padding-right"><?php echo $feed->getBlockTitle(); ?></h3>
+		<div>
+			<div id="itemslider-featured-noticias-<?php echo $this->getFeedId() ?>"
+			     class="itemslider">
+				<?php $i = 1; ?>
+				<?php foreach ($item->getItems() as $post): ?>
+					<?php if ($i > $feed->getItemQty())
+						continue;
+					?>
+
+					<div class="item">
+						<?php $post['title'] = !is_string($post['title']) ? '' : $post['title']; ?>
+
+						<?php if($feed->getUseImages() == 1) : ?>
+							<?php $src = $this->getImage($post); ?>
+							<?php if(isset($src)) : ?>
+								<div class="news-image-wrapper"><img class="lazyOwl" alt="<?php echo $post['title'] ?>"
+								                                     src="<?php echo $src ?>" width="300" /></div>
+							<?php endif; ?>
+						<?php endif; ?>
+
+
+						<h3><a href="<?php echo $post['link']; ?>"><?php echo $post['title']; ?></a></h3>
+
+						<div class="date-categories">
+                            <span class="date">
+                                <?php echo $this->formatDate(date('Y-m-d',strtotime($post['pubDate'])), IntlDateFormatter::LONG); ?>
+                            </span>
+							<?php if(isset($post['category']) && $feed->getShowCategories() == 1) : ?>
+								<span class="categories">
+                                <?php echo ucfirst($this->getCategories($post['category'])) ?>
+                            </span>
+							<?php endif; ?>
+						</div>
+						<div class="description">
+							<?php if($feed->getDescrLimit() > 0) :?>
+								<p><?php echo trim($this->_filter->truncate(strip_tags(str_replace('&#160;',
+										'', $post['description'])), ['length'=>$feed->getDescrLimit()])); ?></p>
+							<?php else: ?>
+								<p><?php echo strip_tags(str_replace('&#160;','', $post['description'])) ?></p>
+							<?php endif; ?>
+							<a class="a-center"
+							   href="<?php echo $post['link']; ?>"><?php echo __('Read more'); ?></a>
+						</div>
+					</div>
+					<?php $i++; endforeach; ?>
+			</div>
+		</div>
+	</div>
+	<?php if($feed->getUseSlider() == 1) : ?>
+		<script type="text/javascript">// <![CDATA[
+            require(['jquery', 'owlcarouselslider'],
+            function(jQuery) {
+                var owl = jQuery('#itemslider-featured-noticias-<?php echo $this->getFeedId() ?>');
+                owl.owlCarousel({
+                    lazyLoad: true,
+                    itemsCustom: [ [0, 1], [320, 1], [480, 1], [768, 1], [960, 1], [1280, 1] ],
+                    responsiveRefreshRate: 50,
+                    slideSpeed: 200,
+                    paginationSpeed: 500,
+                    scrollPerPage: true,
+                    stopOnHover: true,
+                    rewindNav: true,
+                    rewindSpeed: 600,
+                    pagination: false,
+                    navigation: true,
+                    navigationText: false
+                }); //end: owl
+            });
+            // ]]></script>
+	<?php endif; ?>
+<?php endif; ?>

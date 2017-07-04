@@ -1,0 +1,34 @@
+{
+	"name": "w2e/feedblock",
+	"description": "Blocks of news or posts extracted from rss news feeds.",
+	"type": "magento2-module",
+	"version": "0.1.0",
+	"license": "GPL-3.0",
+	"authors": [
+        {
+			"email": "info@way2ecommerce.com",
+			"name": "Way2ecommerce"
+		}
+	],
+	"keywords": [
+		"way2",
+		"mageup",
+		"feed block",
+		"rss block",
+		"magento 2",
+		"magento 2 module",
+		"magento 2 feed reader",
+		"magento2-module"
+	],
+	"require": {
+		"php": "~5.5.0|~5.6.0|~7.0.0"
+	},
+	"autoload": {
+		"files": [
+			"registration.php"
+		],
+		"psr-4": {
+			"W2e\\Feedblock\\": ""
+		}
+	}
+}
