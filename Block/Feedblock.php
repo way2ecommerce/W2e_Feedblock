@@ -105,7 +105,7 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 					$this->_logger->addDebug('Error in  ' . $feed->getFeedUrl());
 					return;
 				}
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->_logger->addDebug('Error parsing xml ' . $feed->getFeedUrl());
 				$this->_logger->critical($e);
 				return;
@@ -114,7 +114,7 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 
 			try {
 				$rawData = $helper->xml2array($xml);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->_logger->addDebug('Error parsing xml');
 				$this->_logger->critical($e);
 				return;
