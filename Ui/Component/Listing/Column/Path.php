@@ -13,41 +13,41 @@ use Magento\Ui\Component\Listing\Columns\Column;
 class Path extends Column
 {
 
-	protected $path;
+    protected $path;
 
-	/**
-	 * Path constructor.
-	 *
-	 * @param ContextInterface $context
-	 * @param UiComponentFactory $uiComponentFactory
-	 * @param array $components
-	 * @param array $data
-	 */
-	public function __construct(
-		ContextInterface $context,
-		UiComponentFactory $uiComponentFactory,
-		array $components = [],
-		array $data = []
-	) {
-		parent::__construct($context, $uiComponentFactory, $components, $data);
-	}
+    /**
+     * Path constructor.
+     *
+     * @param ContextInterface $context
+     * @param UiComponentFactory $uiComponentFactory
+     * @param array $components
+     * @param array $data
+     */
+    public function __construct(
+        ContextInterface $context,
+        UiComponentFactory $uiComponentFactory,
+        array $components = [],
+        array $data = []
+    ) {
+        parent::__construct($context, $uiComponentFactory, $components, $data);
+    }
 
-	/**
-	 * @param array $dataSource
-	 *
-	 * @return array
-	 */
-	public function prepareDataSource(array $dataSource)
-	{
+    /**
+     * @param array $dataSource
+     *
+     * @return array
+     */
+    public function prepareDataSource(array $dataSource)
+    {
 
-		if (isset($dataSource['data']['items'])) {
-			$id = '';
-			foreach ($dataSource['data']['items'] as & $item) {
-				$id = $item['feedblock_id'];
-				$item['path'] = '{{block class="W2e\Feedblock\Block\Feedblock" feed_id=' . $id . ' }}';
-			}
-		}
+        if (isset($dataSource['data']['items'])) {
+            $id = '';
+            foreach ($dataSource['data']['items'] as & $item) {
+                $id           = $item['feedblock_id'];
+                $item['path'] = '{{block class="W2e\Feedblock\Block\Feedblock" feed_id=' . $id . ' }}';
+            }
+        }
 
-		return $dataSource;
-	}
+        return $dataSource;
+    }
 }

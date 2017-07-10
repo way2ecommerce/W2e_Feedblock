@@ -8,27 +8,27 @@ namespace W2e\Feedblock\Model\Feedblock\Source;
  */
 class Status implements \Magento\Framework\Data\OptionSourceInterface
 {
-	/**
-	 * @var \W2e\Feedblock\Model\Feedblock
-	 */
+    /**
+     * @var \W2e\Feedblock\Model\Feedblock
+     */
     protected $status;
 
-	/**
-	 * Status constructor.
-	 *
-	 * @param \W2e\Feedblock\Model\Feedblock $feedblock
-	 */
+    /**
+     * Status constructor.
+     *
+     * @param \W2e\Feedblock\Model\Feedblock $feedblock
+     */
     public function __construct(\W2e\Feedblock\Model\Feedblock $feedblock)
     {
         $this->status = $feedblock;
     }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
     public function toOptionArray()
     {
-        $options[] = ['label' => '', 'value' => ''];
+        $options[]        = ['label' => '', 'value' => ''];
         $availableOptions = $this->status->getAvailableStatuses();
         foreach ($availableOptions as $key => $value) {
             $options[] = [
@@ -36,6 +36,7 @@ class Status implements \Magento\Framework\Data\OptionSourceInterface
                 'value' => $key,
             ];
         }
+
         return $options;
     }
 }

@@ -10,64 +10,65 @@ use Magento\Backend\App\Action;
  */
 class Edit extends \Magento\Backend\App\Action
 {
-	/**
-	 * @var \Magento\Framework\Registry|null
-	 */
+    /**
+     * @var \Magento\Framework\Registry|null
+     */
     protected $_coreRegistry = null;
 
-	/**
-	 * @var \Magento\Framework\View\Result\PageFactory
-	 */
+    /**
+     * @var \Magento\Framework\View\Result\PageFactory
+     */
     protected $resultPageFactory;
 
-	/**
-	 * Edit constructor.
-	 *
-	 * @param Action\Context $context
-	 * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-	 * @param \Magento\Framework\Registry $registry
-	 */
+    /**
+     * Edit constructor.
+     *
+     * @param Action\Context $context
+     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param \Magento\Framework\Registry $registry
+     */
     public function __construct(
         Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Framework\Registry $registry
     ) {
         $this->resultPageFactory = $resultPageFactory;
-        $this->_coreRegistry = $registry;
+        $this->_coreRegistry     = $registry;
         parent::__construct($context);
     }
 
-	/**
-	 * @return bool
-	 */
+    /**
+     * @return bool
+     */
     protected function _isAllowed()
     {
         return $this->_authorization->isAllowed('feedblock_feedblock::save');
     }
 
-	/**
-	 * @return \Magento\Framework\View\Result\Page
-	 */
+    /**
+     * @return \Magento\Framework\View\Result\Page
+     */
     protected function _initAction()
     {
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('W2e')
-            ->addBreadcrumb(__('Feedblock'), __('Feedblock'))
-            ->addBreadcrumb(__('Edit Feed'), __('Edit Feed'));
+                   ->addBreadcrumb(__('Feedblock'), __('Feedblock'))
+                   ->addBreadcrumb(__('Edit Feed'), __('Edit Feed'));
+
         return $resultPage;
     }
 
-	/**
-	 * @return $this|\Magento\Framework\View\Result\Page
-	 */
+    /**
+     * @return $this|\Magento\Framework\View\Result\Page
+     */
     public function execute()
     {
-        $id = $this->getRequest()->getParam('feedblock_id');
+        $id    = $this->getRequest()->getParam('feedblock_id');
         $model = $this->_objectManager->create('W2e\Feedblock\Model\Feedblock');
 
         if ($id) {
             $model->load($id);
-            if (!$model->getId()) {
+            if ( ! $model->getId()) {
                 $this->messageManager->addError(__('This post no longer exists.'));
                 $resultRedirect = $this->resultRedirectFactory->create();
 
@@ -77,7 +78,7 @@ class Edit extends \Magento\Backend\App\Action
 
 
         $data = $this->_objectManager->get('Magento\Backend\Model\Session')->getFormData(true);
-        if (!empty($data)) {
+        if ( ! empty($data)) {
             $model->setData($data);
         }
 
@@ -90,7 +91,7 @@ class Edit extends \Magento\Backend\App\Action
         );
         $resultPage->getConfig()->getTitle()->prepend(__('Feedblock'));
         $resultPage->getConfig()->getTitle()
-            ->prepend($model->getId() ? $model->getTitle() : __('New Feed'));
+                   ->prepend($model->getId() ? $model->getTitle() : __('New Feed'));
 
         return $resultPage;
     }

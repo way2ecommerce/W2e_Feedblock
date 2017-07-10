@@ -9,17 +9,17 @@ namespace W2e\Feedblock\Controller\Adminhtml\Feedblock;
 class Delete extends \Magento\Backend\App\Action
 {
 
-	/**
-	 * @return bool
-	 */
+    /**
+     * @return bool
+     */
     protected function _isAllowed()
     {
         return $this->_authorization->isAllowed('W2e_Feedblock::delete');
     }
 
-	/**
-	 * @return $this
-	 */
+    /**
+     * @return $this
+     */
     public function execute()
     {
         $id = $this->getRequest()->getParam('feedblock_id');
@@ -31,13 +31,16 @@ class Delete extends \Magento\Backend\App\Action
                 $model->load($id);
                 $model->delete();
                 $this->messageManager->addSuccess(__('We cannot find the feed to delete.'));
+
                 return $resultRedirect->setPath('*/*/');
             } catch (\Exception $e) {
                 $this->messageManager->addError($e->getMessage());
+
                 return $resultRedirect->setPath('*/*/edit', ['feedblock_id' => $id]);
             }
         }
         $this->messageManager->addError(__('We cannot find the feed to delete.'));
+
         return $resultRedirect->setPath('*/*/');
     }
 }
