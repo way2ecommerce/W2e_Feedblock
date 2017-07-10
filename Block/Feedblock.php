@@ -39,7 +39,7 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         FeedCollection $feedCollectionFactory,
-        \Magento\Framework\Filter\FilterManager $filter_manager,
+        $filter_manager,
         Monolog $logger,
         array $data = []
     ) {
@@ -72,7 +72,7 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
      */
     public function getIdentities()
     {
-        return [\W2e\Feedblock\Model\Feedblock::CACHE_TAG . '_' . $this->getFeed()->getFeedblockId()];
+        return [self::CACHE_TAG . '_' . $this->getFeed()->getFeedblockId()];
     }
 
     /**
