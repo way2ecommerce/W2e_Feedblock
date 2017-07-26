@@ -10,15 +10,26 @@ use Magento\Backend\App\Action;
  */
 class Edit extends \Magento\Backend\App\Action
 {
-    /**
-     * @var \Magento\Framework\Registry|null
-     */
-    protected $_coreRegistry = null;
+	/**
+	 * @var \Magento\Framework\Registry|null
+	 */
+    protected $coreRegistry = null;
+
+	/**
+	 * @var \Magento\Framework\View\Result\PageFactory
+	 */
+    protected $resultPageFactory;
 
     /**
-     * @var \Magento\Framework\View\Result\PageFactory
+     * @var \W2e\Feedblock\Model\Feedblock
      */
-    protected $resultPageFactory;
+    protected $model;
+
+    /**
+     * @var \Magento\Backend\Model\Session
+     */
+    protected $session;
+
 
     /**
      * Edit constructor.
@@ -26,49 +37,54 @@ class Edit extends \Magento\Backend\App\Action
      * @param Action\Context $context
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      * @param \Magento\Framework\Registry $registry
+     * @param \W2e\Feedblock\Model\Feedblock $model
+     * @param \Magento\Backend\Model\Session $session
      */
     public function __construct(
         Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
-        \Magento\Framework\Registry $registry
+        \Magento\Framework\Registry $registry,
+        \W2e\Feedblock\Model\Feedblock $model,
+        \Magento\Backend\Model\Session $session
     ) {
         $this->resultPageFactory = $resultPageFactory;
-        $this->_coreRegistry     = $registry;
+        $this->coreRegistry = $registry;
         parent::__construct($context);
+        $this->model = $model;
+        $this->session = $session;
     }
 
-    /**
-     * @return bool
-     */
+	/**
+	 * @return bool
+	 */
     protected function _isAllowed()
     {
         return $this->_authorization->isAllowed('feedblock_feedblock::save');
     }
 
-    /**
-     * @return \Magento\Framework\View\Result\Page
-     */
+	/**
+	 * @return \Magento\Framework\View\Result\Page
+	 */
     protected function _initAction()
     {
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('W2e')
-                   ->addBreadcrumb(__('Feedblock'), __('Feedblock'))
-                   ->addBreadcrumb(__('Edit Feed'), __('Edit Feed'));
-
+            ->addBreadcrumb(__('Feedblock'), __('Feedblock'))
+            ->addBreadcrumb(__('Edit Feed'), __('Edit Feed'));
         return $resultPage;
     }
 
-    /**
-     * @return $this|\Magento\Framework\View\Result\Page
-     */
+	/**
+	 * @return $this|\Magento\Framework\View\Result\Page
+	 */
     public function execute()
     {
-        $id    = $this->getRequest()->getParam('feedblock_id');
-        $model = $this->_objectManager->create('W2e\Feedblock\Model\Feedblock');
+        $id = $this->getRequest()->getParam('feedblock_id');
+        $model = $this->model;
 
         if ($id) {
             $model->load($id);
-            if ( ! $model->getId()) {
+            if (!$model->getId()) {
                 $this->messageManager->addError(__('This post no longer exists.'));
                 $resultRedirect = $this->resultRedirectFactory->create();
 
@@ -76,13 +92,12 @@ class Edit extends \Magento\Backend\App\Action
             }
         }
 
-
-        $data = $this->_objectManager->get('Magento\Backend\Model\Session')->getFormData(true);
-        if ( ! empty($data)) {
+        $data = $this->session->getFormData(true);
+        if (!empty($data)) {
             $model->setData($data);
         }
 
-        $this->_coreRegistry->register('feedblock_feedblock', $model);
+        $this->coreRegistry->register('feedblock_feedblock', $model);
 
         $resultPage = $this->_initAction();
         $resultPage->addBreadcrumb(
@@ -91,7 +106,7 @@ class Edit extends \Magento\Backend\App\Action
         );
         $resultPage->getConfig()->getTitle()->prepend(__('Feedblock'));
         $resultPage->getConfig()->getTitle()
-                   ->prepend($model->getId() ? $model->getTitle() : __('New Feed'));
+            ->prepend($model->getId() ? $model->getTitle() : __('New Feed'));
 
         return $resultPage;
     }

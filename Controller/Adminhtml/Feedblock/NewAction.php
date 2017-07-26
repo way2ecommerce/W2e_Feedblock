@@ -9,17 +9,17 @@ namespace W2e\Feedblock\Controller\Adminhtml\Feedblock;
 class NewAction extends \Magento\Backend\App\Action
 {
 
-    /**
-     * @var \Magento\Backend\Model\View\Result\ForwardFactory
-     */
+	/**
+	 * @var \Magento\Backend\Model\View\Result\ForwardFactory
+	 */
     protected $resultForwardFactory;
 
-    /**
-     * NewAction constructor.
-     *
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
-     */
+	/**
+	 * NewAction constructor.
+	 *
+	 * @param \Magento\Backend\App\Action\Context $context
+	 * @param \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
+	 */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
@@ -28,21 +28,20 @@ class NewAction extends \Magento\Backend\App\Action
         parent::__construct($context);
     }
 
-    /**
-     * @return bool
-     */
+	/**
+	 * @return bool
+	 */
     protected function _isAllowed()
     {
         return $this->_authorization->isAllowed('Ashsmith_Blog::save');
     }
 
-    /**
-     * @return $this
-     */
+	/**
+	 * @return $this
+	 */
     public function execute()
     {
         $resultForward = $this->resultForwardFactory->create();
-
         return $resultForward->forward('edit');
     }
 }

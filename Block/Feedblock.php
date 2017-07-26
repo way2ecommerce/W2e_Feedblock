@@ -11,21 +11,38 @@ use Magento\Framework\Logger\Monolog;
  * @package W2e\Feedblock\Block
  */
 class Feedblock extends \Magento\Framework\View\Element\Template implements
-    \Magento\Framework\DataObject\IdentityInterface
+	\Magento\Framework\DataObject\IdentityInterface
 {
 
+	/**
+	 * @var FeedCollection
+	 */
+	protected $feedCollectionFactory;
+
+	/**
+	 * @var Monolog
+	 */
+	protected $logger;
+
     /**
-     * @var FeedCollection
+     * @var string
      */
-    protected $_feedCollectionFactory;
-
-    protected $_feed_conf_data;
+    protected $_template = 'feedblock.phtml';
 
     /**
-     * @var Monolog
+     * @var \W2e\Feedblock\Model\Feedblock
      */
-    protected $_logger;
+    protected $model;
 
+    /**
+     * @var \W2e\Feedblock\Helper\Data
+     */
+    protected $helper;
+
+    /**
+     * @var \Zend_Dom_Query
+     */
+    protected $dom_query;
 
     /**
      * Feedblock constructor.
@@ -34,165 +51,162 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
      * @param FeedCollection $feedCollectionFactory
      * @param \Magento\Framework\Filter\FilterManager $filter_manager
      * @param Monolog $logger
+     * @param \W2e\Feedblock\Model\Feedblock $model
+     * @param \W2e\Feedblock\Helper\Data $helper
+     * @param \Zend_Dom_Query $dom_query
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        FeedCollection $feedCollectionFactory,
-        $filter_manager,
-        Monolog $logger,
-        array $data = []
-    ) {
-        parent::__construct($context, $data);
-        $this->_feedCollectionFactory = $feedCollectionFactory;
-        $this->_filter                = $filter_manager;
-        $this->setTemplate('W2e_Feedblock::feedblock.phtml');
-        $this->_logger = $logger;
-    }
+		\Magento\Framework\View\Element\Template\Context $context,
+		FeedCollection $feedCollectionFactory,
+		\Magento\Framework\Filter\FilterManager $filter_manager,
+		Monolog $logger,
+		\W2e\Feedblock\Model\Feedblock $model,
+		\W2e\Feedblock\Helper\Data $helper,
+		\Zend_Dom_Query $dom_query,
+		array $data = []
+	) {
+		parent::__construct($context, $data);
+		$this->feedCollectionFactory = $feedCollectionFactory;
+		$this->_filter = $filter_manager;
+		$this->logger = $logger;
+		$this->model = $model;
+		$this->helper = $helper;
+		$this->dom_query = $dom_query;
+	}
 
+	/**
+	 * @return mixed
+	 */
+	public function getFeed()
+	{
+		if (!$this->hasData('feed')) {
+			$feed = $this->feedCollectionFactory
+				->create()
+				->addFilter('status', 1);
+			$this->setData('feed', $feed);
+		}
+		return $this->getData('feed');
+	}
 
-    /**
-     * @return mixed
-     */
-    public function getFeed()
-    {
-        if ( ! $this->hasData('feed')) {
-            $feed = $this->_feedCollectionFactory
-                ->create()
-                ->addFilter('status', 1);
-            $this->setData('feed', $feed);
-        }
+	/**
+	 * @return array
+	 */
+	public function getIdentities()
+	{
+		return [\W2e\Feedblock\Model\Feedblock::CACHE_TAG . '_' . $this->getFeed()->getFeedblockId()];
+	}
 
-        return $this->getData('feed');
-    }
+	/**
+	 * @return $this|void
+	 */
+	public function getFeedData()
+	{
+		$id = $this->getData('feed_id');
+		$model = $this->model;
+		$helper = $this->helper;
 
+		if ($id) {
+			$model->load($id);
+		}
 
-    /**
-     * @return array
-     */
-    public function getIdentities()
-    {
-        return [self::CACHE_TAG . '_' . $this->getFeed()->getFeedblockId()];
-    }
+		if($helper->feedblockEnabled()) {
+			$this->setFeedConfData($model);
 
-    /**
-     * @return $this|void
-     */
-    public function getFeedData()
-    {
-        $id            = $this->getData('feed_id');
-        $objectManager = ObjectManager::getInstance();
-        $model         = $objectManager->create('W2e\Feedblock\Model\Feedblock');
-        $helper        = $objectManager->create('W2e\Feedblock\Helper\Data');
+			$feed = $this->getFeedConfData();
 
-        if ($id) {
-            $model->load($id);
-        }
+			if (!$feed || $feed->getStatus() == 2) {
+				return;
+			}
 
-        if ($helper->feedblockEnabled()) {
-            $this->setFeedConfData($model);
+			$context = stream_context_create(array('http' => array('header' => 'Accept: application/xml')));
 
-            $feed = $this->getFeedConfData();
+			try {
+				$xml = @file_get_contents($feed->getFeedUrl(), false, $context);
+				if($xml === false) {
+					$this->logger->addDebug('Error in  ' . $feed->getFeedUrl());
+					return;
+				}
+			} catch (\Exception $e) {
+				$this->logger->addDebug('Error parsing xml ' . $feed->getFeedUrl());
+				$this->logger->critical($e);
+				return;
+			}
 
-            if ( ! $feed || $feed->getStatus() == 2) {
-                return;
-            }
+			try {
+				$rawData = $helper->xml2array($xml);
+			} catch (\Exception $e) {
+				$this->logger->addDebug('Error parsing xml');
+				$this->logger->critical($e);
+				return;
+			}
 
-            $context = stream_context_create(array('http' => array('header' => 'Accept: application/xml')));
+			$this->setItems($rawData['rss']['channel']['item']);
 
-            try {
-                $xml = @file_get_contents($feed->getFeedUrl(), false, $context);
-                if ($xml === false) {
-                    $this->_logger->addDebug('Error in  ' . $feed->getFeedUrl());
+			return $this;
+		}
+	}
 
-                    return;
-                }
-            } catch (\Exception $e) {
-                $this->_logger->addDebug('Error parsing xml ' . $feed->getFeedUrl());
-                $this->_logger->critical($e);
+	/**
+	 * @param $post
+	 *
+	 * @return string
+	 */
+	public function getImage($post)
+	{
+		$src = '';
 
-                return;
-            }
+		if (isset($post['media:thumbnail_attr']) && isset($post['media:thumbnail_attr']['url'])) {
+			$src = $post['media:thumbnail_attr']['url'];
+		} else if (isset($post['content:encoded'])) {
+			$dom = new \Zend_Dom_Query($post['content:encoded']);
+			$elements = $dom->query('img');
+			foreach ($elements as $result) {
+				$src = utf8_decode($result->getAttribute('src'));
+				continue;
+			}
+		} elseif(isset($post['enclosure_attr']['url'])){
+			$src = $post['enclosure_attr']['url'];
+		}else {
+            $dom = $this->dom_query->setDocument($post['description']);
+			$elements = $dom->query('img');
+			foreach ($elements as $result) {
+				$src = (utf8_decode($result->getAttribute('src')));
+				continue;
+			}
+		}
 
+		$checkUrl = parse_url($src);
 
-            try {
-                $rawData = $helper->xml2array($xml);
-            } catch (\Exception $e) {
-                $this->_logger->addDebug('Error parsing xml');
-                $this->_logger->critical($e);
+		if (!isset($checkUrl['host'])) {
+			$feedUrl = parse_url($this->getFeedConfData()->getFeedUrl());
+			$src = $feedUrl['scheme'].'://'.$feedUrl['host'] . $src;
+		}
 
-                return;
-            }
+		return $src;
+	}
 
-            $this->setItems($rawData['rss']['channel']['item']);
+	/**
+	 * @param $categories
+	 *
+	 * @return string
+	 */
+	public function getCategories($categories)
+	{
+		$c = 0;
+		$cats = array();
+		if(is_array($categories)) {
+			foreach ($categories as $cat) {
+				if ($c > 2) {
+					continue;
+				}
+				$cats[] = $cat;
+				$c++;
+			}
+		} else{
+			$cats[] = $categories;
+		}
 
-            return $this;
-        }
-    }
-
-    /**
-     * @param $post
-     *
-     * @return string
-     */
-    public function getImage($post)
-    {
-        $src = '';
-
-        if (isset($post['media:thumbnail_attr']) && isset($post['media:thumbnail_attr']['url'])) {
-            $src = $post['media:thumbnail_attr']['url'];
-        } else if (isset($post['content:encoded'])) {
-            //$dom = \Zend_Dom_Query($post['content:encoded']);
-            $dom      = new \Zend_Dom_Query($post['content:encoded']);
-            $elements = $dom->query('img');
-            foreach ($elements as $result) {
-                $src = utf8_decode($result->getAttribute('src'));
-                continue;
-            }
-        } else if (isset($post['enclosure_attr']['url'])) {
-            $src = $post['enclosure_attr']['url'];
-
-        } else {
-            $dom      = new \Zend_Dom_Query($post['description']);
-            $elements = $dom->query('img');
-            foreach ($elements as $result) {
-                $src = (utf8_decode($result->getAttribute('src')));
-                continue;
-            }
-        }
-
-        $checkUrl = parse_url($src);
-
-        if ( ! isset($checkUrl['host'])) {
-            $feedUrl = parse_url($this->getFeedConfData()->getFeedUrl());
-            $src     = $feedUrl['scheme'] . '://' . $feedUrl['host'] . $src;
-        }
-
-        return $src;
-    }
-
-    /**
-     * @param $categories
-     *
-     * @return string
-     */
-    public function getCategories($categories)
-    {
-        $c    = 0;
-        $cats = array();
-        if (is_array($categories)) {
-            foreach ($categories as $cat) {
-                if ($c > 2) {
-                    continue;
-                }
-                $cats[] = $cat;
-                $c++;
-            }
-        } else {
-            $cats[] = $categories;
-        }
-
-        return implode(', ', $cats);
-    }
-
+		return implode(', ', $cats);
+	}
 }

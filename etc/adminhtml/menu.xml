@@ -1,10 +1,7 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="W2e" title="W2e" translate="title" module="W2e_Feedblock" sortOrder="30"
-             resource="W2e_FeedblocK::feedblock"/>
-        <add id="W2e_Feedblock::feedblock" title="FeedBlock" translate="title" module="W2e_Feedblock" sortOrder="10"
-             parent="W2e" action="feedblock/feedblock/" resource="W2e_Feedblock::feedblock"/>
+        <add id="W2e" title="W2e" translate="title" module="W2e_Feedblock" sortOrder="30" resource="W2e_FeedblocK::feedblock"/>
+        <add id="W2e_Feedblock::feedblock" title="FeedBlock" translate="title" module="W2e_Feedblock" sortOrder="10" parent="W2e" action="feedblock/feedblock/" resource="W2e_Feedblock::feedblock"/>
     </menu>
 </config>
