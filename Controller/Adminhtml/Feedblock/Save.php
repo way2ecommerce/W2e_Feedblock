@@ -16,25 +16,17 @@ class Save extends \Magento\Backend\App\Action
     protected $model;
 
     /**
-     * @var \Magento\Backend\Model\Session
-     */
-    protected $session;
-
-    /**
      * Save constructor.
      *
      * @param Action\Context $context
      * @param \W2e\Feedblock\Model\Feedblock $model
-     * @param \Magento\Backend\Model\Session $session
      */
     public function __construct(
 	    Action\Context $context,
-        \W2e\Feedblock\Model\Feedblock $model,
-        \Magento\Backend\Model\Session $session)
+        \W2e\Feedblock\Model\Feedblock $model)
 	{
 		parent::__construct($context);
 		$this->model = $model;
-		$this->session = $session;
 	}
 
 	/**
@@ -72,7 +64,7 @@ class Save extends \Magento\Backend\App\Action
 			try {
 				$model->save();
 				$this->messageManager->addSuccess(__('You saved this Feed.'));
-				$this->session->setFormData(false);
+				$this->_session->setFormData(false);
 				if ($this->getRequest()->getParam('back')) {
 					return $resultRedirect->setPath(
 					    '*/*/edit',

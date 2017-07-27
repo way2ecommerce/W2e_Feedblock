@@ -3,7 +3,6 @@
 namespace W2e\Feedblock\Block;
 
 use W2e\Feedblock\Model\ResourceModel\Feedblock\CollectionFactory as FeedCollection;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Logger\Monolog;
 
 /**
@@ -39,40 +38,29 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
      */
     protected $helper;
 
-    /**
-     * @var \Zend_Dom_Query
-     */
-    protected $dom_query;
 
     /**
      * Feedblock constructor.
      *
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param FeedCollection $feedCollectionFactory
-     * @param \Magento\Framework\Filter\FilterManager $filter_manager
      * @param Monolog $logger
      * @param \W2e\Feedblock\Model\Feedblock $model
      * @param \W2e\Feedblock\Helper\Data $helper
-     * @param \Zend_Dom_Query $dom_query
      * @param array $data
      */
     public function __construct(
 		\Magento\Framework\View\Element\Template\Context $context,
 		FeedCollection $feedCollectionFactory,
-		\Magento\Framework\Filter\FilterManager $filter_manager,
 		Monolog $logger,
 		\W2e\Feedblock\Model\Feedblock $model,
-		\W2e\Feedblock\Helper\Data $helper,
-		\Zend_Dom_Query $dom_query,
-		array $data = []
+		\W2e\Feedblock\Helper\Data $helper
 	) {
-		parent::__construct($context, $data);
+		parent::__construct($context);
 		$this->feedCollectionFactory = $feedCollectionFactory;
-		$this->_filter = $filter_manager;
 		$this->logger = $logger;
 		$this->model = $model;
 		$this->helper = $helper;
-		$this->dom_query = $dom_query;
 	}
 
 	/**
@@ -168,7 +156,7 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 		} elseif(isset($post['enclosure_attr']['url'])){
 			$src = $post['enclosure_attr']['url'];
 		}else {
-            $dom = $this->dom_query->setDocument($post['description']);
+            $dom = new \Zend_Dom_Query($post['description']);
 			$elements = $dom->query('img');
 			foreach ($elements as $result) {
 				$src = (utf8_decode($result->getAttribute('src')));

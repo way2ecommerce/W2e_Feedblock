@@ -25,11 +25,6 @@ class Edit extends \Magento\Backend\App\Action
      */
     protected $model;
 
-    /**
-     * @var \Magento\Backend\Model\Session
-     */
-    protected $session;
-
 
     /**
      * Edit constructor.
@@ -38,20 +33,17 @@ class Edit extends \Magento\Backend\App\Action
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      * @param \Magento\Framework\Registry $registry
      * @param \W2e\Feedblock\Model\Feedblock $model
-     * @param \Magento\Backend\Model\Session $session
      */
     public function __construct(
         Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Framework\Registry $registry,
-        \W2e\Feedblock\Model\Feedblock $model,
-        \Magento\Backend\Model\Session $session
+        \W2e\Feedblock\Model\Feedblock $model
     ) {
         $this->resultPageFactory = $resultPageFactory;
         $this->coreRegistry = $registry;
         parent::__construct($context);
         $this->model = $model;
-        $this->session = $session;
     }
 
 	/**
@@ -92,7 +84,7 @@ class Edit extends \Magento\Backend\App\Action
             }
         }
 
-        $data = $this->session->getFormData(true);
+        $data = $this->_session->getFormData(true);
         if (!empty($data)) {
             $model->setData($data);
         }
