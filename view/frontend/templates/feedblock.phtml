@@ -16,54 +16,58 @@ $feed = $block->getFeedConfData();
 			<div id="itemslider-featured-noticias-<?php echo $block->getFeedId() ?>"
 			     class="itemslider">
 				<?php $i = 1; ?>
-				<?php foreach ($item->getItems() as $post) : ?>
-					<?php if ($i > $feed->getItemQty())
-						continue;
-					?>
+                <?php if($item->getItems()): ?>
+                    <?php foreach ($item->getItems() as $post) : ?>
+                        <?php if ($i > $feed->getItemQty())
+                            continue;
+                        ?>
 
-					<div class="item">
-						<?php $post['title'] = !is_string($post['title']) ? '' : $post['title']; ?>
+                        <div class="item">
+                            <?php $post['title'] = !is_string($post['title']) ? '' : $post['title']; ?>
 
-						<?php if($feed->getUseImages() == 1) : ?>
-							<?php $src = $block->getImage($post); ?>
-							<?php if(isset($src)) : ?>
-								<div class="news-image-wrapper"><img class="lazyOwl" alt="<?php echo $block->escapeHtml($post['title']) ?>"
-								                                     src="<?php echo $block->escapeHtml($src) ?>" width="300" /></div>
-							<?php endif; ?>
-						<?php endif; ?>
+                            <?php if($feed->getUseImages() == 1) : ?>
+                                <?php $src = $block->getImage($post); ?>
+                                <?php if(isset($src) && $src) : ?>
+                                    <div class="news-image-wrapper"><img class="lazyOwl" alt="<?php echo $block->escapeHtml($post['title']) ?>"
+                                                                         src="<?php echo $block->escapeHtml($src) ?>" width="300" /></div>
+                                <?php endif; ?>
+                            <?php endif; ?>
 
 
-						<h3><a href="<?php echo $post['link']; ?>"><?php echo $block->escapeHtml($post['title']); ?></a></h3>
+                            <h3><a href="<?php echo $post['link']; ?>"><?php echo $block->escapeHtml($post['title']); ?></a></h3>
 
-						<div class="date-categories">
-                            <span class="date">
-                                <?php echo $block->formatDate(
-                                        date('Y-m-d',
-                                        strtotime($block->escapeHtml($post['pubDate']))),
-                                        IntlDateFormatter::LONG
-                                ); ?>
-                            </span>
-							<?php if(isset($post['category']) && $feed->getShowCategories() == 1) : ?>
-								<span class="categories">
-                                <?php echo ucfirst($block->escapeHtml($block->getCategories($post['category']))) ?>
-                            </span>
-							<?php endif; ?>
-						</div>
-						<div class="description">
-							<?php if($feed->getDescrLimit() > 0) :?>
-								<p><?php echo $block->escapeHtml(
-								        trim($block->_filter->truncate(strip_tags(str_replace('&#160;',
-										'', $post['description'])),
-                                            ['length'=>$feed->getDescrLimit()]))); ?></p>
-							<?php else : ?>
-								<p><?php echo $block->escapeHtml(strip_tags(str_replace('&#160;','', $post['description']))) ?></p>
-							<?php endif; ?>
-							<a class="a-center"
-							   href="<?php echo $block->escapeHtml($post['link']); ?>">
-                                <?php echo __('Read more'); ?></a>
-						</div>
-					</div>
-					<?php $i++; endforeach; ?>
+                            <div class="date-categories">
+                                <span class="date">
+                                    <?php echo $block->formatDate(
+                                            date('Y-m-d',
+                                            strtotime($block->escapeHtml($post['pubDate']))),
+                                            IntlDateFormatter::LONG
+                                    ); ?>
+                                </span>
+                                <?php if(isset($post['category']) && $feed->getShowCategories() == 1) : ?>
+                                    <span class="categories">
+                                    <?php echo ucfirst($block->escapeHtml($block->getCategories($post['category']))) ?>
+                                </span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="description">
+                                <?php if($feed->getDescrLimit() > 0) :?>
+                                    <p><?php echo $block->escapeHtml(
+                                            trim($block->_filter->truncate(strip_tags(str_replace('&#160;',
+                                            '', $post['description'])),
+                                                ['length'=>$feed->getDescrLimit()]))); ?></p>
+                                <?php else : ?>
+                                    <p><?php echo $block->escapeHtml(strip_tags(str_replace('&#160;','', $post['description']))) ?></p>
+                                <?php endif; ?>
+                                <a class="a-center"
+                                   href="<?php echo $block->escapeHtml($post['link']); ?>">
+                                    <?php echo __('Read more'); ?></a>
+                            </div>
+                        </div>
+                        <?php $i++; endforeach; ?>
+                    <?php else: ?>
+                        <p><?php echo __('Feed Error') ?></p>
+                    <?php endif; ?>
 			</div>
 		</div>
 	</div>

@@ -2,6 +2,7 @@
 
 namespace W2e\Feedblock\Block;
 
+use Magento\Framework\Exception\NoSuchEntityException;
 use W2e\Feedblock\Model\ResourceModel\Feedblock\CollectionFactory as FeedCollection;
 use Magento\Framework\Logger\Monolog;
 
@@ -77,12 +78,23 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 		return $this->getData('feed');
 	}
 
+	public function get($id)
+    {
+	    $feedblockModel = $this->feedCollectionFactory->create();
+	    $feedblockModel->load($id);
+	    if(!$feedblockModel->getId()) {
+	        throw new NoSuchEntityException(__('Feed with Id "%1" does not exist.', $id));
+        }
+
+        return $feedblockModel;
+    }
+
 	/**
 	 * @return array
 	 */
 	public function getIdentities()
 	{
-		return [\W2e\Feedblock\Model\Feedblock::CACHE_TAG . '_' . $this->getFeed()->getFeedblockId()];
+		return [\W2e\Feedblock\Model\Feedblock::CACHE_TAG . '_' . $this->model->getId()];
 	}
 
 	/**
@@ -97,6 +109,10 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 		if ($id) {
 			$model->load($id);
 		}
+
+		if ($id != $model->getId()) {
+		    return;
+        }
 
 		if($helper->feedblockEnabled()) {
 			$this->setFeedConfData($model);
@@ -129,7 +145,9 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 				return;
 			}
 
-			$this->setItems($rawData['rss']['channel']['item']);
+			if($rawData['rss']) {
+                $this->setItems($rawData['rss']['channel']['item']);
+            }
 
 			return $this;
 		}
@@ -166,7 +184,7 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 
 		$checkUrl = parse_url($src);
 
-		if (!isset($checkUrl['host'])) {
+		if (!isset($checkUrl['host']) && $src) {
 			$feedUrl = parse_url($this->getFeedConfData()->getFeedUrl());
 			$src = $feedUrl['scheme'].'://'.$feedUrl['host'] . $src;
 		}

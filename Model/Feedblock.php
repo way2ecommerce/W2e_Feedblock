@@ -30,7 +30,23 @@ class Feedblock extends \Magento\Framework\Model\AbstractModel implements Feedbl
 		$this->_init("W2e\Feedblock\Model\ResourceModel\Feedblock");
 	}
 
-	/**
+    /**
+     * @return mixed
+     */
+    public function getId() {
+        return $this->getData(self::FEEDBLOCK_ID);
+    }
+
+    /**
+     * @param mixed $id
+     *
+     * @return $this
+     */
+    public function setId($id) {
+        return $this->setData(self::FEEDBLOCK_ID, $id);
+    }
+
+    /**
 	 * @param $feedblock_url
 	 *
 	 * @return mixed
