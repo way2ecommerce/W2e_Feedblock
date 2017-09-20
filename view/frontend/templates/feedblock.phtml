@@ -53,9 +53,9 @@ $feed = $block->getFeedConfData();
                             <div class="description">
                                 <?php if($feed->getDescrLimit() > 0) :?>
                                     <p><?php echo $block->escapeHtml(
-                                            trim($block->_filter->truncate(strip_tags(str_replace('&#160;',
-                                            '', $post['description'])),
-                                                ['length'=>$feed->getDescrLimit()]))); ?></p>
+                                            trim($block->truncateString(strip_tags(str_replace('&#160;',
+                                                '', $post['description'])),
+                                                $feed->getDescrLimit()))); ?></p>
                                 <?php else : ?>
                                     <p><?php echo $block->escapeHtml(strip_tags(str_replace('&#160;','', $post['description']))) ?></p>
                                 <?php endif; ?>

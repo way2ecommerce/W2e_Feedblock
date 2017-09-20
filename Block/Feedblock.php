@@ -215,4 +215,22 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 
 		return implode(', ', $cats);
 	}
+
+    /**
+     * Truncate string
+     *
+     * @param string $value
+     * @param int $length
+     * @param string $etc
+     * @param string &$remainder
+     * @param bool $breakWords
+     * @return string
+     */
+    public function truncateString($value, $length = 80, $etc = '...', &$remainder = '', $breakWords = true)
+    {
+        return $this->filterManager->truncate(
+            $value,
+            ['length' => $length, 'etc' => $etc, 'remainder' => $remainder, 'breakWords' => $breakWords]
+        );
+    }
 }
