@@ -94,7 +94,7 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 	 */
 	public function getIdentities()
 	{
-		return [\W2e\Feedblock\Model\Feedblock::CACHE_TAG . '_' . $this->model->getId()];
+		return [\W2e\Feedblock\Model\Feedblock::CACHE_TAG . '_' . $this->getData('feed_id')];
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Feedblock extends \Magento\Framework\View\Element\Template implements
 			$model->load($id);
 		}
 
-		if ($id != $model->getId()) {
+		if ($id != $model->getId() || !$model->getStatus()) {
 		    return;
         }
 
